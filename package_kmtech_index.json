@@ -2,15 +2,12 @@
   "packages": [
     {
       "name": "SparkFun",
-      "maintainer": "SparkFun Electronics",
-      "websiteURL": "https://SparkFun.com",
-      "email": "TechSupport@SparkFun.com",
-      "help": {
-        "online": "https://learn.sparkfun.com/tutorials/installing-arduino-ide/board-add-ons-with-arduino-board-manager"
-      },
+      "maintainer": "KMTECH",
+      "websiteURL": "https://kmtech.id",
+      "email": "contact@kmtech.id",
       "platforms": [
         {
-          "name": "SparkFun Apollo3 Boards",
+          "name": "KMTECH_Boards",
           "architecture": "apollo3",
           "version": "1.2.0",
           "category": "Contributed",
