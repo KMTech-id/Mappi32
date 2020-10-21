@@ -36,6 +36,6 @@ Finally, if you are sure no one else had the issue, follow the [ISSUE_TEMPLATE](
 
 ### Mappi32 Board PINMAP
 
-![Pin Functions](docs/esp32_pinmap.png)
+![Pin Functions](docs/mappi32.png)
 
 
