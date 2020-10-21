@@ -1,20 +1,14 @@
-# Arduino core for the ESP32
+# Arduino core for the Mappi32
 [![Build Status](https://travis-ci.org/espressif/arduino-esp32.svg?branch=master)](https://travis-ci.org/espressif/arduino-esp32) ![](https://github.com/espressif/arduino-esp32/workflows/ESP32%20Arduino%20CI/badge.svg)
 
-### Need help or have a question? Join the chat at [![https://gitter.im/espressif/arduino-esp32](https://badges.gitter.im/espressif/arduino-esp32.svg)](https://gitter.im/espressif/arduino-esp32?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+### Need help or have a question? Email at contact@kmtech.id
+
 
 ## Contents
-- [Development Status](#development-status)
 - [Installation Instructions](#installation-instructions)
 - [Decoding Exceptions](#decoding-exceptions)
 - [Issue/Bug report template](#issuebug-report-template)
-- [ESP32Dev Board PINMAP](#esp32dev-board-pinmap)
-
-### Development Status
-
-Latest Stable Release  [![Release Version](https://img.shields.io/github/release/espressif/arduino-esp32.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/) [![Release Date](https://img.shields.io/github/release-date/espressif/arduino-esp32.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/) [![Downloads](https://img.shields.io/github/downloads/espressif/arduino-esp32/latest/total.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/)
-
-Latest Development Release  [![Release Version](https://img.shields.io/github/release/espressif/arduino-esp32.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/) [![Release Date](https://img.shields.io/github/release-date/espressif/arduino-esp32.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/) [![Downloads](https://img.shields.io/github/downloads/espressif/arduino-esp32/latest/total.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/)
+- [Mappi32 Board PINMAP](#esp32dev-board-pinmap)
 
 
 ### Installation Instructions
@@ -40,10 +34,8 @@ Before reporting an issue, make sure you've searched for similar one that was al
 
 Finally, if you are sure no one else had the issue, follow the [ISSUE_TEMPLATE](docs/ISSUE_TEMPLATE.md) while reporting any issue.
 
-### ESP32Dev Board PINMAP
+### Mappi32 Board PINMAP
 
 ![Pin Functions](docs/esp32_pinmap.png)
 
-### Tip
 
-Sometimes to program ESP32 via serial you must keep GPIO0 LOW during the programming process
