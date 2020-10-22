@@ -1,4 +1,4 @@
-## Steps to install Arduino ESP32 support on Windows
+## Steps to install Arduino Mappi32 support on Windows
 ### Tested on 32 and 64 bit Windows 10 machines
 
 1. Download and install the latest Arduino IDE ```Windows Installer``` from [arduino.cc](https://www.arduino.cc/en/Main/Software)
@@ -25,7 +25,7 @@
 
         ![Step 5](win-screenshots/win-gui-5.png)
 
-4. Plug your ESP32 board and wait for the drivers to install (or install manually any that might be required)
+4. Plug your Mappi board and wait for the drivers to install (or install manually any that might be required)
 5. Start Arduino IDE
 6. Select your board in ```Tools > Board``` menu
 7. Select the COM port that the board is attached to

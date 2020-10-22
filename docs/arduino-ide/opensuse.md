@@ -13,7 +13,7 @@ Installation instructions for openSUSE
   fi && \
   mkdir -p ~/Arduino/hardware/espressif && \
   cd ~/Arduino/hardware/espressif && \
-  git clone https://github.com/espressif/arduino-esp32.git esp32 && \
+  git clone https://github.com/KMTech-id/Mappi32.git esp32 && \
   cd esp32 && \
   git submodule update --init --recursive && \
   cd tools && \
