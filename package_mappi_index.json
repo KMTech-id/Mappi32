@@ -1,7 +1,7 @@
 {
   "packages": [
     { 
-      "name": "Mappi32-board",
+      "name": "mappi32",
       "email": "mappi32@kmtech.id",
       "maintainer": "KMTECH",
       "websiteURL": "https://github.com/KMTech-id", 
