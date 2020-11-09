@@ -10,12 +10,9 @@
       }, 
       "platforms": [
         {
-	  "name": "KMTECH Boards",
+	  "name": "mappi32",
           "category": "Mappi32", 
           "url": "https://github.com/KMTech-id/Mappi32/releases/download/v1.0.5/esp32-v1.0.5.zip", 
-          "help": {
-            "online": ""
-          }, 
           "version": "1.0.5", 
           "architecture": "MappiESP32", 
           "archiveFileName": "Mappi32-1.0.5.zip", 
@@ -26,17 +23,17 @@
           ], 
           "toolsDependencies": [
             {
-              "packager": "esp32", 
+              "packager": "mappi32", 
               "version": "1.22.0-80-g6c4433a-5.2.0", 
               "name": "xtensa-esp32-elf-gcc"
             }, 
             {
-              "packager": "esp32", 
+              "packager": "mappi32", 
               "version": "2.6.1", 
               "name": "esptool_py"
             }, 
             {
-              "packager": "esp32", 
+              "packager": "mappi32", 
               "version": "0.2.3", 
               "name": "mkspiffs"
             }
