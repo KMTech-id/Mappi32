@@ -14,7 +14,7 @@
           "category": "Mappi32", 
           "url": "https://github.com/KMTech-id/Mappi32/releases/download/v1.0.6/esp32-v1.0.6.zip", 
           "version": "1.0.5", 
-          "architecture": "MappiESP32", 
+          "architecture": "esp32", 
           "archiveFileName": "Mappi32-1.0.5.zip", 
           "boards": [
             {
