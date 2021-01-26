@@ -39,18 +39,21 @@ public:
 	bool        canWriteNoResponse();
 	BLERemoteDescriptor* getDescriptor(BLEUUID uuid);
 	std::map<std::string, BLERemoteDescriptor*>* getDescriptors();
+	BLERemoteService* getRemoteService();
 	uint16_t    getHandle();
 	BLEUUID     getUUID();
 	std::string readValue();
 	uint8_t     readUInt8();
 	uint16_t    readUInt16();
 	uint32_t    readUInt32();
-	void        registerForNotify(notify_callback _callback, bool notifications = true);
+	float       readFloat();
+	void        registerForNotify(notify_callback _callback, bool notifications = true, bool descriptorRequiresRegistration = true);
 	void        writeValue(uint8_t* data, size_t length, bool response = false);
 	void        writeValue(std::string newValue, bool response = false);
 	void        writeValue(uint8_t newValue, bool response = false);
 	std::string toString();
 	uint8_t*	readRawData();
+    void        setAuth(esp_gatt_auth_req_t auth);
 
 private:
 	BLERemoteCharacteristic(uint16_t handle, BLEUUID uuid, esp_gatt_char_prop_t charProp, BLERemoteService* pRemoteService);
@@ -61,13 +64,13 @@ private:
 	// Private member functions
 	void gattClientEventHandler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t* evtParam);
 
-	BLERemoteService* getRemoteService();
 	void              removeDescriptors();
 	void              retrieveDescriptors();
 
 	// Private properties
 	BLEUUID              m_uuid;
 	esp_gatt_char_prop_t m_charProp;
+    esp_gatt_auth_req_t  m_auth;
 	uint16_t             m_handle;
 	BLERemoteService*    m_pRemoteService;
 	FreeRTOS::Semaphore  m_semaphoreReadCharEvt      = FreeRTOS::Semaphore("ReadCharEvt");
