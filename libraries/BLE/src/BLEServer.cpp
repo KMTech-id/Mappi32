@@ -202,19 +202,13 @@ void BLEServer::handleGATTServerEvent(esp_gatts_cb_event_t event, esp_gatt_if_t 
 		// If we receive a disconnect event then invoke the callback for disconnects (if one is present).
 		// we also want to start advertising again.
 		case ESP_GATTS_DISCONNECT_EVT: {
+			m_connectedCount--;                          // Decrement the number of connected devices count.
 			if (m_pServerCallbacks != nullptr) {         // If we have callbacks, call now.
 				m_pServerCallbacks->onDisconnect(this);
 			}
-            if(m_connId == ESP_GATT_IF_NONE) {
-                return;
-            }
-
-            // only decrement if connection is found in map and removed
-            // sometimes this event triggers w/o a valid connection
-			if(removePeerDevice(param->disconnect.conn_id, false)) {
-                m_connectedCount--;                          // Decrement the number of connected devices count.
-            }
-            break;
+			startAdvertising(); //- do this with some delay from the loop()
+			removePeerDevice(param->disconnect.conn_id, false);
+			break;
 		} // ESP_GATTS_DISCONNECT_EVT
 
 
@@ -401,8 +395,8 @@ void BLEServer::addPeerDevice(void* peer, bool _client, uint16_t conn_id) {
 	m_connectedServersMap.insert(std::pair<uint16_t, conn_status_t>(conn_id, status));	
 }
 
-bool BLEServer::removePeerDevice(uint16_t conn_id, bool _client) {
-	return m_connectedServersMap.erase(conn_id) > 0;
+void BLEServer::removePeerDevice(uint16_t conn_id, bool _client) {
+	m_connectedServersMap.erase(conn_id);
 }
 /* multi connect support */
 

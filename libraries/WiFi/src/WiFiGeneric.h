@@ -27,25 +27,10 @@
 #include <esp_event_loop.h>
 #include <functional>
 #include "WiFiType.h"
-#include "IPAddress.h"
-#include <wifi_provisioning/manager.h>
-
-typedef struct
-{
-     wifi_prov_cb_event_t event;
-     void *event_data;
-}wifi_prov_event_t;
-
-typedef struct
-{
-    wifi_prov_event_t *prov_event;
-    system_event_t *sys_event;
-}system_prov_event_t;
 
 typedef void (*WiFiEventCb)(system_event_id_t event);
 typedef std::function<void(system_event_id_t event, system_event_info_t info)> WiFiEventFuncCb;
 typedef void (*WiFiEventSysCb)(system_event_t *event);
-typedef void (*WiFiProvEventCb)(system_event_t *sys_event, wifi_prov_event_t *prov_event);
 
 typedef size_t wifi_event_id_t;
 
@@ -88,7 +73,6 @@ class WiFiGenericClass
     wifi_event_id_t onEvent(WiFiEventCb cbEvent, system_event_id_t event = SYSTEM_EVENT_MAX);
     wifi_event_id_t onEvent(WiFiEventFuncCb cbEvent, system_event_id_t event = SYSTEM_EVENT_MAX);
     wifi_event_id_t onEvent(WiFiEventSysCb cbEvent, system_event_id_t event = SYSTEM_EVENT_MAX);
-    wifi_event_id_t onEvent(WiFiProvEventCb cbEvent, system_event_id_t event = SYSTEM_EVENT_MAX);
     void removeEvent(WiFiEventCb cbEvent, system_event_id_t event = SYSTEM_EVENT_MAX);
     void removeEvent(WiFiEventSysCb cbEvent, system_event_id_t event = SYSTEM_EVENT_MAX);
     void removeEvent(wifi_event_id_t id);
@@ -99,7 +83,6 @@ class WiFiGenericClass
     int32_t channel(void);
 
     void persistent(bool persistent);
-    void enableLongRange(bool enable);
 
     static bool mode(wifi_mode_t);
     static wifi_mode_t getMode();
@@ -108,17 +91,15 @@ class WiFiGenericClass
     bool enableAP(bool enable);
 
     bool setSleep(bool enable);
-    bool setSleep(wifi_ps_type_t mode);
     bool getSleep();
 
     bool setTxPower(wifi_power_t power);
     wifi_power_t getTxPower();
 
-    static esp_err_t _eventCallback(void *arg, system_event_t *event, wifi_prov_event_t *prov_event);
+    static esp_err_t _eventCallback(void *arg, system_event_t *event);
 
   protected:
     static bool _persistent;
-    static bool _long_range;
     static wifi_mode_t _forceSleepLastMode;
 
     static int setStatusBits(int bits);

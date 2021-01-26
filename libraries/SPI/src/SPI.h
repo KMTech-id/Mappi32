@@ -1,5 +1,5 @@
 /* 
-  SPI.h - SPI library for esp32
+  SPI.h - SPI library for esp8266
 
   Copyright (c) 2015 Hristo Gochkov. All rights reserved.
   This file is part of the esp8266 core for Arduino environment.
@@ -25,8 +25,6 @@
 #include "pins_arduino.h"
 #include "esp32-hal-spi.h"
 
-#define SPI_HAS_TRANSACTION
-
 class SPISettings
 {
 public:
@@ -50,7 +48,7 @@ private:
     uint32_t _div;
     uint32_t _freq;
     bool _inTransaction;
-    void writePattern_(const uint8_t * data, uint8_t size, uint8_t repeat);
+    void writePattern_(uint8_t * data, uint8_t size, uint8_t repeat);
 
 public:
     SPIClass(uint8_t spi_bus=HSPI);
@@ -72,7 +70,7 @@ public:
     uint16_t transfer16(uint16_t data);
     uint32_t transfer32(uint32_t data);
   
-    void transferBytes(const uint8_t * data, uint8_t * out, uint32_t size);
+    void transferBytes(uint8_t * data, uint8_t * out, uint32_t size);
     void transferBits(uint32_t data, uint32_t * out, uint8_t bits);
 
     void write(uint8_t data);
@@ -80,7 +78,7 @@ public:
     void write32(uint32_t data);
     void writeBytes(const uint8_t * data, uint32_t size);
     void writePixels(const void * data, uint32_t size);//ili9341 compatible
-    void writePattern(const uint8_t * data, uint8_t size, uint32_t repeat);
+    void writePattern(uint8_t * data, uint8_t size, uint32_t repeat);
 
     spi_t * bus(){ return _spi; }
 };

@@ -36,11 +36,11 @@ static const char * _err2str(uint8_t _error){
 }
 
 static bool _partitionIsBootable(const esp_partition_t* partition){
-    uint8_t buf[ENCRYPTED_BLOCK_SIZE];
+    uint8_t buf[4];
     if(!partition){
         return false;
     }
-    if(!ESP.partitionRead(partition, 0, (uint32_t*)buf, ENCRYPTED_BLOCK_SIZE)) {
+    if(!ESP.flashRead(partition->address, (uint32_t*)buf, 4)) {
         return false;
     }
 
@@ -50,11 +50,17 @@ static bool _partitionIsBootable(const esp_partition_t* partition){
     return true;
 }
 
-bool UpdateClass::_enablePartition(const esp_partition_t* partition){
+static bool _enablePartition(const esp_partition_t* partition){
+    uint8_t buf[4];
     if(!partition){
         return false;
     }
-    return ESP.partitionWrite(partition, 0, (uint32_t*) _skipBuffer, ENCRYPTED_BLOCK_SIZE);
+    if(!ESP.flashRead(partition->address, (uint32_t*)buf, 4)) {
+        return false;
+    }
+    buf[0] = ESP_IMAGE_HEADER_MAGIC;
+
+    return ESP.flashWrite(partition->address, (uint32_t*)buf, 4);
 }
 
 UpdateClass::UpdateClass()
@@ -104,7 +110,7 @@ bool UpdateClass::rollBack(){
     return _partitionIsBootable(partition) && !esp_ota_set_boot_partition(partition);
 }
 
-bool UpdateClass::begin(size_t size, int command, int ledPin, uint8_t ledOn, const char *label) {
+bool UpdateClass::begin(size_t size, int command, int ledPin, uint8_t ledOn) {
     if(_size > 0){
         log_w("already running");
         return false;
@@ -115,8 +121,6 @@ bool UpdateClass::begin(size_t size, int command, int ledPin, uint8_t ledOn, con
 
     _reset();
     _error = 0;
-    _target_md5 = emptyString;
-    _md5 = MD5Builder();
 
     if(size == 0) {
         _error = UPDATE_ERROR_SIZE;
@@ -132,7 +136,7 @@ bool UpdateClass::begin(size_t size, int command, int ledPin, uint8_t ledOn, con
         log_d("OTA Partition: %s", _partition->label);
     }
     else if (command == U_SPIFFS) {
-        _partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, label);
+        _partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, NULL);
         if(!_partition){
             _error = UPDATE_ERROR_NO_PARTITION;
             return false;
@@ -175,33 +179,24 @@ void UpdateClass::abort(){
 
 bool UpdateClass::_writeBuffer(){
     //first bytes of new firmware
-    uint8_t skip = 0;
     if(!_progress && _command == U_FLASH){
         //check magic
         if(_buffer[0] != ESP_IMAGE_HEADER_MAGIC){
             _abort(UPDATE_ERROR_MAGIC_BYTE);
             return false;
         }
-
-        //Stash the first 16 bytes of data and set the offset so they are
-        //not written at this point so that partially written firmware
-        //will not be bootable
-        skip = ENCRYPTED_BLOCK_SIZE;
-        _skipBuffer = (uint8_t*)malloc(skip);
-        if(!_skipBuffer){
-            log_e("malloc failed");
-        return false;
-        }
-        memcpy(_skipBuffer, _buffer, skip);
+        //remove magic byte from the firmware now and write it upon success
+        //this ensures that partially written firmware will not be bootable
+        _buffer[0] = 0xFF;
     }
     if (!_progress && _progress_callback) {
         _progress_callback(0, _size);
     }
-    if(!ESP.partitionEraseRange(_partition, _progress, SPI_FLASH_SEC_SIZE)){
+    if(!ESP.flashEraseSector((_partition->address + _progress)/SPI_FLASH_SEC_SIZE)){
         _abort(UPDATE_ERROR_ERASE);
         return false;
     }
-    if (!ESP.partitionWrite(_partition, _progress + skip, (uint32_t*)_buffer + skip/sizeof(uint32_t), _bufferLen - skip)) {
+    if (!ESP.flashWrite(_partition->address + _progress, (uint32_t*)_buffer, _bufferLen)) {
         _abort(UPDATE_ERROR_WRITE);
         return false;
     }
@@ -323,8 +318,6 @@ size_t UpdateClass::write(uint8_t *data, size_t len) {
 size_t UpdateClass::writeStream(Stream &data) {
     size_t written = 0;
     size_t toRead = 0;
-    int timeout_failures = 0;
-
     if(hasError() || !isRunning())
         return 0;
 
@@ -346,24 +339,15 @@ size_t UpdateClass::writeStream(Stream &data) {
             bytesToRead = remaining();
         }
 
-        /* 
-        Init read&timeout counters and try to read, if read failed, increase counter,
-        wait 100ms and try to read again. If counter > 300 (30 sec), give up/abort
-        */
-        toRead = 0;
-        timeout_failures = 0;
-        while(!toRead) {
-            toRead = data.readBytes(_buffer + _bufferLen,  bytesToRead);
-            if(toRead == 0) {
-                timeout_failures++;
-                if (timeout_failures >= 300) {
-                    _abort(UPDATE_ERROR_STREAM);
-                    return written;
-                }
-                delay(100);
+        toRead = data.readBytes(_buffer + _bufferLen,  bytesToRead);
+        if(toRead == 0) { //Timeout
+            delay(100);
+            toRead = data.readBytes(_buffer + _bufferLen, bytesToRead);
+            if(toRead == 0) { //Timeout
+                _abort(UPDATE_ERROR_STREAM);
+                return written;
             }
         }
-
         if(_ledPin != -1) {
             digitalWrite(_ledPin, !_ledOn); // Switch LED off
         }
@@ -375,7 +359,7 @@ size_t UpdateClass::writeStream(Stream &data) {
     return written;
 }
 
-void UpdateClass::printError(Print &out){
+void UpdateClass::printError(Stream &out){
     out.println(_err2str(_error));
 }
 

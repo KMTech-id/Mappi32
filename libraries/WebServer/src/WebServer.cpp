@@ -33,7 +33,7 @@
 
 
 static const char AUTHORIZATION_HEADER[] = "Authorization";
-static const char qop_auth[] = "qop=\"auth\"";
+static const char qop_auth[] = "qop=auth";
 static const char WWW_Authenticate[] = "WWW-Authenticate";
 static const char Content_Length[] = "Content-Length";
 
@@ -45,7 +45,6 @@ WebServer::WebServer(IPAddress addr, int port)
 , _currentVersion(0)
 , _currentStatus(HC_NONE)
 , _statusChange(0)
-, _nullDelay(true)
 , _currentHandler(nullptr)
 , _firstHandler(nullptr)
 , _lastHandler(nullptr)
@@ -67,7 +66,6 @@ WebServer::WebServer(int port)
 , _currentVersion(0)
 , _currentStatus(HC_NONE)
 , _statusChange(0)
-, _nullDelay(true)
 , _currentHandler(nullptr)
 , _firstHandler(nullptr)
 , _lastHandler(nullptr)
@@ -163,17 +161,17 @@ bool WebServer::authenticate(const char * username, const char * password){
     } else if(authReq.startsWith(F("Digest"))) {
       authReq = authReq.substring(7);
       log_v("%s", authReq.c_str());
-      String _username = _extractParam(authReq,F("username=\""),'\"');
+      String _username = _extractParam(authReq,F("username=\""));
       if(!_username.length() || _username != String(username)) {
         authReq = "";
         return false;
       }
       // extracting required parameters for RFC 2069 simpler Digest
-      String _realm    = _extractParam(authReq, F("realm=\""),'\"');
-      String _nonce    = _extractParam(authReq, F("nonce=\""),'\"');
-      String _uri      = _extractParam(authReq, F("uri=\""),'\"');
-      String _response = _extractParam(authReq, F("response=\""),'\"');
-      String _opaque   = _extractParam(authReq, F("opaque=\""),'\"');
+      String _realm    = _extractParam(authReq, F("realm=\""));
+      String _nonce    = _extractParam(authReq, F("nonce=\""));
+      String _uri      = _extractParam(authReq, F("uri=\""));
+      String _response = _extractParam(authReq, F("response=\""));
+      String _opaque   = _extractParam(authReq, F("opaque=\""));
 
       if((!_realm.length()) || (!_nonce.length()) || (!_uri.length()) || (!_response.length()) || (!_opaque.length())) {
         authReq = "";
@@ -187,7 +185,7 @@ bool WebServer::authenticate(const char * username, const char * password){
       String _nc,_cnonce;
       if(authReq.indexOf(FPSTR(qop_auth)) != -1) {
         _nc = _extractParam(authReq, F("nc="), ',');
-        _cnonce = _extractParam(authReq, F("cnonce=\""),'\"');
+        _cnonce = _extractParam(authReq, F("cnonce=\""));
       }
       String _H1 = md5str(String(username) + ':' + _realm + ':' + String(password));
       log_v("Hash of user:realm:pass=%s", _H1.c_str());
@@ -247,15 +245,15 @@ void WebServer::requestAuthentication(HTTPAuthMethod mode, const char* realm, co
   send(401, String(FPSTR(mimeTable[html].mimeType)), authFailMsg);
 }
 
-void WebServer::on(const Uri &uri, WebServer::THandlerFunction handler) {
+void WebServer::on(const String &uri, WebServer::THandlerFunction handler) {
   on(uri, HTTP_ANY, handler);
 }
 
-void WebServer::on(const Uri &uri, HTTPMethod method, WebServer::THandlerFunction fn) {
+void WebServer::on(const String &uri, HTTPMethod method, WebServer::THandlerFunction fn) {
   on(uri, method, fn, _fileUploadHandler);
 }
 
-void WebServer::on(const Uri &uri, HTTPMethod method, WebServer::THandlerFunction fn, WebServer::THandlerFunction ufn) {
+void WebServer::on(const String &uri, HTTPMethod method, WebServer::THandlerFunction fn, WebServer::THandlerFunction ufn) {
   _addRequestHandler(new FunctionRequestHandler(fn, ufn, uri, method));
 }
 
@@ -282,9 +280,6 @@ void WebServer::handleClient() {
   if (_currentStatus == HC_NONE) {
     WiFiClient client = _server.available();
     if (!client) {
-      if (_nullDelay) {
-        delay(1);
-      }
       return;
     }
 
@@ -313,12 +308,11 @@ void WebServer::handleClient() {
           _contentLength = CONTENT_LENGTH_NOT_SET;
           _handleRequest();
 
-// Fix for issue with Chrome based browsers: https://github.com/espressif/arduino-esp32/issues/3652
-//           if (_currentClient.connected()) {
-//             _currentStatus = HC_WAIT_CLOSE;
-//             _statusChange = millis();
-//             keepCurrentClient = true;
-//           }
+          if (_currentClient.connected()) {
+            _currentStatus = HC_WAIT_CLOSE;
+            _statusChange = millis();
+            keepCurrentClient = true;
+          }
         }
       } else { // !_currentClient.available()
         if (millis() - _statusChange <= HTTP_MAX_DATA_WAIT) {
@@ -374,10 +368,6 @@ void WebServer::sendHeader(const String& name, const String& value, bool first) 
 
 void WebServer::setContentLength(const size_t contentLength) {
     _contentLength = contentLength;
-}
-
-void WebServer::enableDelay(boolean value) {
-  _nullDelay = value;
 }
 
 void WebServer::enableCORS(boolean value) {
@@ -464,23 +454,20 @@ void WebServer::send(int code, const String& content_type, const String& content
 }
 
 void WebServer::sendContent(const String& content) {
-  sendContent(content.c_str(), content.length());
-}
-
-void WebServer::sendContent(const char* content, size_t contentLength) {
   const char * footer = "\r\n";
+  size_t len = content.length();
   if(_chunked) {
     char * chunkSize = (char *)malloc(11);
     if(chunkSize){
-      sprintf(chunkSize, "%x%s", contentLength, footer);
+      sprintf(chunkSize, "%x%s", len, footer);
       _currentClientWrite(chunkSize, strlen(chunkSize));
       free(chunkSize);
     }
   }
-  _currentClientWrite(content, contentLength);
+  _currentClientWrite(content.c_str(), len);
   if(_chunked){
     _currentClient.write(footer, 2);
-    if (contentLength == 0) {
+    if (len == 0) {
       _chunked = false;
     }
   }

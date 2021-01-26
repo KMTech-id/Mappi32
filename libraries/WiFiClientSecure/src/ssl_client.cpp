@@ -19,9 +19,6 @@
 #include "ssl_client.h"
 #include "WiFi.h"
 
-#ifndef MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED
-#  error "Please configure IDF framework to include mbedTLS -> Enable pre-shared-key ciphersuites and activate at least one cipher"
-#endif
 
 const char *pers = "esp32-tls";
 
@@ -51,16 +48,12 @@ void ssl_init(sslclient_context *ssl_client)
 }
 
 
-int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t port, int timeout, const char *rootCABuff, const char *cli_cert, const char *cli_key, const char *pskIdent, const char *psKey, bool insecure)
+int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t port, int timeout, const char *rootCABuff, const char *cli_cert, const char *cli_key, const char *pskIdent, const char *psKey)
 {
     char buf[512];
     int ret, flags;
     int enable = 1;
     log_v("Free internal heap before TLS %u", ESP.getFreeHeap());
-
-    if (rootCABuff == NULL && pskIdent == NULL && psKey == NULL && !insecure) {
-        return -1;
-    }
 
     log_v("Starting socket");
     ssl_client->socket = -1;
@@ -84,16 +77,12 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
 
     if (lwip_connect(ssl_client->socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == 0) {
         if(timeout <= 0){
-            timeout = 30000; // Milli seconds.
+            timeout = 30000;
         }
-        timeval so_timeout = { .tv_sec = timeout / 1000, .tv_usec = (timeout % 1000) * 1000 };
-
-#define ROE(x,msg) { if (((x)<0)) { log_e("LWIP Socket config of " msg " failed."); return -1; }}
-        ROE(lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_RCVTIMEO, &so_timeout, sizeof(so_timeout)),"SO_RCVTIMEO");
-        ROE(lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_SNDTIMEO, &so_timeout, sizeof(so_timeout)),"SO_SNDTIMEO");
-
-        ROE(lwip_setsockopt(ssl_client->socket, IPPROTO_TCP, TCP_NODELAY, &enable, sizeof(enable)),"TCP_NODELAY");
-        ROE(lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_KEEPALIVE, &enable, sizeof(enable)),"SO_KEEPALIVE");
+        lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+        lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+        lwip_setsockopt(ssl_client->socket, IPPROTO_TCP, TCP_NODELAY, &enable, sizeof(enable));
+        lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_KEEPALIVE, &enable, sizeof(enable));
     } else {
         log_e("Connect to Server failed!");
         return -1;
@@ -122,10 +111,7 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
     // MBEDTLS_SSL_VERIFY_REQUIRED if a CA certificate is defined on Arduino IDE and
     // MBEDTLS_SSL_VERIFY_NONE if not.
 
-    if (insecure) {
-        mbedtls_ssl_conf_authmode(&ssl_client->ssl_conf, MBEDTLS_SSL_VERIFY_NONE);
-        log_i("WARNING: Skipping SSL Verification. INSECURE!");
-    } else if (rootCABuff != NULL) {
+    if (rootCABuff != NULL) {
         log_v("Loading CA cert");
         mbedtls_x509_crt_init(&ssl_client->ca_cert);
         mbedtls_ssl_conf_authmode(&ssl_client->ssl_conf, MBEDTLS_SSL_VERIFY_REQUIRED);
@@ -133,8 +119,6 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
         mbedtls_ssl_conf_ca_chain(&ssl_client->ssl_conf, &ssl_client->ca_cert, NULL);
         //mbedtls_ssl_conf_verify(&ssl_client->ssl_ctx, my_verify, NULL );
         if (ret < 0) {
-            // free the ca_cert in the case parse failed, otherwise, the old ca_cert still in the heap memory, that lead to "out of memory" crash.
-            mbedtls_x509_crt_free(&ssl_client->ca_cert);
             return handle_error(ret);
         }
     } else if (pskIdent != NULL && psKey != NULL) {
@@ -168,10 +152,11 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
             return handle_error(ret);
         }
     } else {
-        return -1;
+        mbedtls_ssl_conf_authmode(&ssl_client->ssl_conf, MBEDTLS_SSL_VERIFY_NONE);
+        log_i("WARNING: Use certificates for a more secure communication!");
     }
 
-    if (!insecure && cli_cert != NULL && cli_key != NULL) {
+    if (cli_cert != NULL && cli_key != NULL) {
         mbedtls_x509_crt_init(&ssl_client->client_cert);
         mbedtls_pk_init(&ssl_client->client_key);
 
@@ -179,8 +164,6 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
 
         ret = mbedtls_x509_crt_parse(&ssl_client->client_cert, (const unsigned char *)cli_cert, strlen(cli_cert) + 1);
         if (ret < 0) {
-        // free the client_cert in the case parse failed, otherwise, the old client_cert still in the heap memory, that lead to "out of memory" crash.
-        mbedtls_x509_crt_free(&ssl_client->client_cert);
             return handle_error(ret);
         }
 
@@ -217,7 +200,7 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
         }
         if((millis()-handshake_start_time)>ssl_client->handshake_timeout)
 			return -1;
-	    vTaskDelay(2);//2 ticks
+	    vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 
 
@@ -233,7 +216,7 @@ int start_ssl_client(sslclient_context *ssl_client, const char *host, uint32_t p
     log_v("Verifying peer X.509 certificate...");
 
     if ((flags = mbedtls_ssl_get_verify_result(&ssl_client->ssl_ctx)) != 0) {
-        memset(buf, 0, sizeof(buf));
+        bzero(buf, sizeof(buf));
         mbedtls_x509_crt_verify_info(buf, sizeof(buf), "  ! ", flags);
         log_e("Failed to verify peer certificate! verification info: %s", buf);
         stop_ssl_socket(ssl_client, rootCABuff, cli_cert, cli_key);  //It's not safe continue.
@@ -290,20 +273,23 @@ int data_to_read(sslclient_context *ssl_client)
     return res;
 }
 
+
 int send_ssl_data(sslclient_context *ssl_client, const uint8_t *data, uint16_t len)
 {
-    log_v("Writing HTTP request with %d bytes...", len); //for low level debug
+    log_v("Writing HTTP request...");  //for low level debug
     int ret = -1;
 
-    if ((ret = mbedtls_ssl_write(&ssl_client->ssl_ctx, data, len)) <= 0){
-        log_v("Handling error %d", ret); //for low level debug
-        return handle_error(ret);
-    } else{
-        log_v("Returning with %d bytes written", ret); //for low level debug
+    while ((ret = mbedtls_ssl_write(&ssl_client->ssl_ctx, data, len)) <= 0) {
+        if (ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE) {
+            return handle_error(ret);
+        }
     }
 
+    len = ret;
+    //log_v("%d bytes written", len);  //for low level debug
     return ret;
 }
+
 
 int get_ssl_receive(sslclient_context *ssl_client, uint8_t *data, int length)
 {

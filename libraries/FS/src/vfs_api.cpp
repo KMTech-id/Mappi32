@@ -184,11 +184,6 @@ bool VFSImpl::rmdir(const char *path)
         return false;
     }
 
-    if (strcmp(_mountpoint, "/spiffs") == 0) {
-        log_e("rmdir is unnecessary in SPIFFS");
-        return false;
-    }
-
     VFSFileImpl f(this, path, "r");
     if(!f || !f.isDirectory()) {
         if(f) {
@@ -205,7 +200,7 @@ bool VFSImpl::rmdir(const char *path)
         return false;
     }
     sprintf(temp,"%s%s", _mountpoint, path);
-    auto rc = ::rmdir(temp);
+    auto rc = unlink(temp);
     free(temp);
     return rc == 0;
 }

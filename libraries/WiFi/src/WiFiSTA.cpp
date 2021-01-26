@@ -224,8 +224,8 @@ wl_status_t WiFiSTAClass::begin()
 }
 
 /**
- * will force a disconnect and then start reconnecting to AP
- * @return true when successful
+ * will force a disconnect an then start reconnecting to AP
+ * @return ok
  */
 bool WiFiSTAClass::reconnect()
 {
@@ -337,7 +337,7 @@ bool WiFiSTAClass::config(IPAddress local_ip, IPAddress gateway, IPAddress subne
 
 /**
  * is STA interface connected?
- * @return true if STA is connected to an AP
+ * @return true if STA is connected to an AD
  */
 bool WiFiSTAClass::isConnected()
 {
@@ -488,8 +488,8 @@ IPAddress WiFiSTAClass::dnsIP(uint8_t dns_no)
     if(WiFiGenericClass::getMode() == WIFI_MODE_NULL){
         return IPAddress();
     }
-    const ip_addr_t* dns_ip = dns_getserver(dns_no);
-    return IPAddress(dns_ip->u_addr.ip4.addr);
+    ip_addr_t dns_ip = dns_getserver(dns_no);
+    return IPAddress(dns_ip.u_addr.ip4.addr);
 }
 
 /**

@@ -3,11 +3,6 @@
  *
  *  Created on: Mar 12, 2018
  *      Author: pcbreflux
- *  Edited on: Mar 20, 2020 by beegee-tokyo
- *  Fix temperature value (8.8 fixed format)
- *  Fix time stamp (0.1 second resolution)
- *  Fixes based on EddystoneTLM frame specification https://github.com/google/eddystone/blob/master/eddystone-tlm/tlm-plain.md
- * 
  */
 #include "sdkconfig.h"
 #if defined(CONFIG_BT_ENABLED)
@@ -25,7 +20,7 @@ BLEEddystoneTLM::BLEEddystoneTLM() {
 	m_eddystoneData.frameType = EDDYSTONE_TLM_FRAME_TYPE;
 	m_eddystoneData.version = 0;
 	m_eddystoneData.volt = 3300; // 3300mV = 3.3V
-	m_eddystoneData.temp = (uint16_t) ((float) 23.00)/256;
+	m_eddystoneData.temp = (uint16_t) ((float) 23.00);
 	m_eddystoneData.advCount = 0;
 	m_eddystoneData.tmil = 0;
 } // BLEEddystoneTLM
@@ -43,47 +38,38 @@ uint8_t BLEEddystoneTLM::getVersion() {
 } // getVersion
 
 uint16_t BLEEddystoneTLM::getVolt() {
-	return ENDIAN_CHANGE_U16(m_eddystoneData.volt);
+	return m_eddystoneData.volt;
 } // getVolt
 
 float BLEEddystoneTLM::getTemp() {
-	return ENDIAN_CHANGE_U16(m_eddystoneData.temp) / 256.0f;
+	return (float)m_eddystoneData.temp;
 } // getTemp
 
 uint32_t BLEEddystoneTLM::getCount() {
-	return ENDIAN_CHANGE_U32(m_eddystoneData.advCount);
+	return m_eddystoneData.advCount;
 } // getCount
 
 uint32_t BLEEddystoneTLM::getTime() {
-	return (ENDIAN_CHANGE_U32(m_eddystoneData.tmil)) / 10;
+	return m_eddystoneData.tmil;
 } // getTime
 
 std::string BLEEddystoneTLM::toString() {
   std::string out = "";
   uint32_t rawsec = ENDIAN_CHANGE_U32(m_eddystoneData.tmil);
-  char val[12];
+  char val[6];
 
-  out += "Version "; // + std::string(m_eddystoneData.version);
-  snprintf(val, sizeof(val), "%d", m_eddystoneData.version);
-  out += val;
+  out += "Version " + m_eddystoneData.version;
   out += "\n";
-  out += "Battery Voltage "; // + ENDIAN_CHANGE_U16(m_eddystoneData.volt);
-  snprintf(val, sizeof(val), "%d", ENDIAN_CHANGE_U16(m_eddystoneData.volt));
-  out += val;
+  out += "Battery Voltage " + ENDIAN_CHANGE_U16(m_eddystoneData.volt);
   out += " mV\n";
 
   out += "Temperature ";
-  snprintf(val, sizeof(val), "%.2f", ENDIAN_CHANGE_U16(m_eddystoneData.temp) / 256.0f);
+  snprintf(val, sizeof(val), "%d", m_eddystoneData.temp);
   out += val;
-  out += " C\n";
+  out += ".0 °C\n";
 
   out += "Adv. Count ";
   snprintf(val, sizeof(val), "%d", ENDIAN_CHANGE_U32(m_eddystoneData.advCount));
-  out += val;
-  out += "\n";
-
-  out += "Time in seconds ";
-  snprintf(val, sizeof(val), "%d", rawsec/10);
   out += val;
   out += "\n";
 

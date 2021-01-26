@@ -105,7 +105,7 @@ public:
 
     int read(uint8_t * dst, size_t len){
         if(!dst || !len || (_pos == _fill && !fillBuffer())){
-            return _failed ? -1 : 0;
+            return -1;
         }
         size_t a = _fill - _pos;
         if(len <= a || ((len - a) <= (_size - _fill) && fillBuffer() >= (len - a))){
@@ -216,9 +216,9 @@ int WiFiClient::connect(IPAddress ip, uint16_t port, int32_t timeout)
 
     uint32_t ip_addr = ip;
     struct sockaddr_in serveraddr;
-    memset((char *) &serveraddr, 0, sizeof(serveraddr));
+    bzero((char *) &serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
-    memcpy((void *)&serveraddr.sin_addr.s_addr, (const void *)(&ip_addr), 4);
+    bcopy((const void *)(&ip_addr), (void *)&serveraddr.sin_addr.s_addr, 4);
     serveraddr.sin_port = htons(port);
     fd_set fdset;
     struct timeval tv;
@@ -345,9 +345,6 @@ int WiFiClient::read()
     int res = read(&data, 1);
     if(res < 0) {
         return res;
-    }
-    if (res == 0) {  //  No data available.
-        return -1;
     }
     return data;
 }
@@ -498,28 +495,23 @@ uint8_t WiFiClient::connected()
         int res = recv(fd(), &dummy, 0, MSG_DONTWAIT);
         // avoid unused var warning by gcc
         (void)res;
-        // recv only sets errno if res is <= 0
-        if (res <= 0){
-          switch (errno) {
-              case EWOULDBLOCK:
-              case ENOENT: //caused by vfs
-                  _connected = true;
-                  break;
-              case ENOTCONN:
-              case EPIPE:
-              case ECONNRESET:
-              case ECONNREFUSED:
-              case ECONNABORTED:
-                  _connected = false;
-                  log_d("Disconnected: RES: %d, ERR: %d", res, errno);
-                  break;
-              default:
-                  log_i("Unexpected: RES: %d, ERR: %d", res, errno);
-                  _connected = true;
-                  break;
-          }
-        } else {
-          _connected = true;
+        switch (errno) {
+            case EWOULDBLOCK:
+            case ENOENT: //caused by vfs
+                _connected = true;
+                break;
+            case ENOTCONN:
+            case EPIPE:
+            case ECONNRESET:
+            case ECONNREFUSED:
+            case ECONNABORTED:
+                _connected = false;
+                log_d("Disconnected: RES: %d, ERR: %d", res, errno);
+                break;
+            default:
+                log_i("Unexpected: RES: %d, ERR: %d", res, errno);
+                _connected = true;
+                break;
         }
     }
     return _connected;
