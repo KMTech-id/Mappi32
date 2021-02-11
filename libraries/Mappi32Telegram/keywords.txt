@@ -1,0 +1,22 @@
+#######################################
+# Syntax Coloring Map For Ultrasound
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MappiTelegram	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+MappiTelegram_setup	KEYWORD2
+MappiTelegram_msgAvailable	KEYWORD2
+MappiTelegram_readMsg	KEYWORD2
+MappiTelegram_sendMsg	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
