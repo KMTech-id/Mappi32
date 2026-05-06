@@ -1,23 +1,22 @@
 {
   "packages": [
-    {
-      "maintainer": "KMTECH", 
+    { 
+      "name": "mappi32",
+      "email": "mappi32@kmtech.id",
+      "maintainer": "KMTECH",
+      "websiteURL": "https://github.com/KMTech-id", 
       "help": {
         "online": "http://kmtech.id"
       }, 
-      "websiteURL": "https://github.com/KMTech-id", 
       "platforms": [
         {
-	  "name": "KMTECH Boards",
-          "category": "ESP32", 
-          "url": "https://github.com/espressif/arduino-esp32/releases/download/1.0.4/esp32-1.0.4.zip", 
-          "checksum": "SHA-256:d9108bf873933c4e48a3ca401fb51e41b2cc3f98d7c9b9be9881e7ca34bf0efe", 
-          "help": {
-            "online": ""
-          }, 
-          "version": "1.0.4", 
+	  "name": "mappi32",
+          "category": "Mappi32", 
+          "url": "https://github.com/KMTech-id/Mappi32/releases/download/v1.0.7/esp32-v1.0.7.zip", 
+          "version": "1.0.7", 
           "architecture": "esp32", 
-          "archiveFileName": "esp32-1.0.4.zip", 
+          "archiveFileName": "Mappi32-1.0.7.zip", 
+		  "checksum": "SHA-256:80ecc7f3ba67a6f10f1bea8153b7f9526038bf3cfa8165d4dfac0166d4293805", 
           "boards": [
             {
               "name": "Mappi32"
@@ -25,17 +24,17 @@
           ], 
           "toolsDependencies": [
             {
-              "packager": "esp32", 
+              "packager": "mappi32", 
               "version": "1.22.0-80-g6c4433a-5.2.0", 
               "name": "xtensa-esp32-elf-gcc"
             }, 
             {
-              "packager": "esp32", 
+              "packager": "mappi32", 
               "version": "2.6.1", 
               "name": "esptool_py"
             }, 
             {
-              "packager": "esp32", 
+              "packager": "mappi32", 
               "version": "0.2.3", 
               "name": "mkspiffs"
             }
@@ -215,9 +214,7 @@
             }
           ]
         }
-      ], 
-      "email": "hristo@espressif.com", 
-      "name": "esp32"
+      ]
     }
   ]
 }
