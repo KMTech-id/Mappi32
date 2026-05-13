@@ -47,7 +47,7 @@
           "architecture": "esp32",
           "version": "2.1.7",
           "category": "Mappi32 Modern",
-          "url": "https://github.com/KMTECH-id/Mappi32/releases/download/v2.1.7/esp32-v2.1.7.zip"
+          "url": "https://github.com/KMTECH-id/Mappi32/releases/download/v2.1.7/esp32-v2.1.7.zip",
           "archiveFileName": "esp32-v2.1.7.zip",
           "checksum": "SHA-256:7d1dff2cac96631a13f82bed0b83fc7608506b2e19376cc5166622d5ef17fdce",
           "size": "50000000",
