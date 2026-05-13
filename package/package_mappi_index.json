@@ -104,19 +104,19 @@
           ]
         },
 
-        {
-          "name": "xtensa-esp32-elf-gcc",
-          "version": "1.22.0-80-g6c4433a-5.2.0",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "url": "https://dl.espressif.com/dl/xtensa-esp32-elf-gcc8_4_0-win32.zip",
-              "archiveFileName": "xtensa-esp32-elf-gcc8_4_0-win32.zip",
-              "checksum": "SHA-256:f217fccbeaaa8c92db239036e0d6202458de4488b954a3a38f35ac2ec48058a4",
-              "size": "125719261"
-            }
-          ]
-        }
+       {
+        "name": "xtensa-esp32-elf-gcc",
+        "version": "gcc8_4_0-esp-2021r2-patch5",
+        "systems": [
+          {
+            "host": "i686-mingw32",
+            "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-2021r2-patch5/xtensa-esp32-elf-gcc8_4_0-esp-2021r2-patch5-win32.zip",
+            "archiveFileName": "xtensa-esp32-elf-gcc8_4_0-win32.zip",
+            "checksum": "8f7a46e6b71f867ae6b4c4ea811a5caeb016982459ad923df17f2938044064ec",
+            "size": "150000000"
+          }
+        ]
+      }
 
       ]
     }
