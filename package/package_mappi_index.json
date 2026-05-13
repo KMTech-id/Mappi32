@@ -12,7 +12,7 @@
       "platforms": [
 
         {
-          "name": "Mappi32 Legacy",
+          "name": "Mappi32",
           "architecture": "esp32",
           "version": "1.0.7",
           "category": "Mappi32 Legacy",
@@ -31,11 +31,6 @@
           "toolsDependencies": [
             {
               "packager": "mappi32",
-              "name": "xtensa-esp32-elf-gcc",
-              "version": "1.22.0-80-g6c4433a-5.2.0"
-            },
-            {
-              "packager": "mappi32",
               "name": "esptool_py",
               "version": "2.6.1"
             },
@@ -48,7 +43,7 @@
         },
 
         {
-          "name": "Mappi32 Modern LoRa",
+          "name": "Mappi32",
           "architecture": "esp32",
           "version": "2.1.7",
           "category": "Mappi32 Modern",
@@ -65,11 +60,6 @@
           ],
 
           "toolsDependencies": [
-            {
-              "packager": "mappi32",
-              "name": "xtensa-esp32-elf-gcc",
-              "version": "1.22.0-80-g6c4433a-5.2.0"
-            },
             {
               "packager": "mappi32",
               "name": "esptool_py",
