@@ -112,7 +112,7 @@
             "host": "i686-mingw32",
             "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-2021r2-patch5/xtensa-esp32-elf-gcc8_4_0-esp-2021r2-patch5-win32.zip",
             "archiveFileName": "xtensa-esp32-elf-gcc8_4_0-win32.zip",
-            "checksum": "8f7a46e6b71f867ae6b4c4ea811a5caeb016982459ad923df17f2938044064ec",
+            "checksum": "SHA-256:8f7a46e6b71f867ae6b4c4ea811a5caeb016982459ad923df17f2938044064ec",
             "size": "150000000"
           }
         ]
