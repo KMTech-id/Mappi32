@@ -5,7 +5,6 @@
       "maintainer": "KMTECH",
       "websiteURL": "https://github.com/KMTech-id",
       "email": "mappi32@kmtech.id",
-
       "help": {
         "online": "https://kmtech.id"
       },
@@ -18,12 +17,9 @@
           "version": "1.0.7",
           "category": "Mappi32 Legacy",
 
-          "url": "https://github.com/KMTech-id/Mappi32/releases/download/v1.0.7/esp32-v1.0.7.zip",
-
+          "url": "https://github.com/KMTECH-id/Mappi32/releases/download/v1.0.7/esp32-v1.0.7.zip",
           "archiveFileName": "esp32-v1.0.7.zip",
-
           "checksum": "SHA-256:80ecc7f3ba67a6f10f1bea8153b7f9526038bf3cfa8165d4dfac0166d4293805",
-
           "size": "36853332",
 
           "boards": [
@@ -57,12 +53,9 @@
           "version": "2.1.7",
           "category": "Mappi32 Modern",
 
-          "url": "https://github.com/KMTech-id/Mappi32/releases/download/v2.1.7/esp32-v2.1.7.zip",
-
+          "url": "https://github.com/KMTECH-id/Mappi32/releases/download/v2.1.7/esp32-v2.1.7.zip",
           "archiveFileName": "esp32-v2.1.7.zip",
-
           "checksum": "SHA-256:7d1dff2cac96631a13f82bed0b83fc7608506b2e19376cc5166622d5ef17fdce",
-
           "size": "50000000",
 
           "boards": [
@@ -75,7 +68,7 @@
             {
               "packager": "mappi32",
               "name": "xtensa-esp32-elf-gcc",
-              "version": "gcc8_4_0-esp-2021r2-patch5"
+              "version": "1.22.0-80-g6c4433a-5.2.0"
             },
             {
               "packager": "mappi32",
@@ -89,6 +82,7 @@
             }
           ]
         }
+
       ],
 
       "tools": [
@@ -96,7 +90,6 @@
         {
           "name": "esptool_py",
           "version": "2.6.1",
-
           "systems": [
             {
               "host": "i686-mingw32",
@@ -111,7 +104,6 @@
         {
           "name": "mkspiffs",
           "version": "0.2.3",
-
           "systems": [
             {
               "host": "i686-mingw32",
@@ -126,7 +118,6 @@
         {
           "name": "xtensa-esp32-elf-gcc",
           "version": "1.22.0-80-g6c4433a-5.2.0",
-
           "systems": [
             {
               "host": "i686-mingw32",
@@ -136,28 +127,9 @@
               "size": "125719261"
             }
           ]
-        },
-
-        {
-          "name": "xtensa-esp32-elf-gcc",
-          "version": "gcc8_4_0-esp-2021r2-patch5",
-
-          "systems": [
-            {
-              "host": "i686-mingw32",
-
-              "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-2021r2-patch5/xtensa-esp32-elf-gcc8_4_0-win32.zip",
-
-              "archiveFileName": "xtensa-esp32-elf-gcc8_4_0-win32.zip",
-
-              "checksum": "SHA-256:8f7a46e6b71f867ae6b4c4ea811a5caeb016982459ad923df17f2938044064ec",
-
-              "size": "150000000"
-            }
-          ]
         }
+
       ]
     }
   ]
 }
-
