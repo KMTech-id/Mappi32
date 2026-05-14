@@ -47,6 +47,12 @@
           "version": "1.0.7",
           "category": "Mappi32 ESP32 Core 1.0.7",
 
+          "help": {
+            "online": "https://kmtech.id"
+          },
+        
+          "deprecated": false,
+          
           "url": "https://github.com/KMTECH-id/Mappi32/releases/download/v1.0.7/esp32-v1.0.7.zip",
           "archiveFileName": "esp32-v1.0.7.zip",
           "checksum": "SHA-256:80ecc7f3ba67a6f10f1bea8153b7f9526038bf3cfa8165d4dfac0166d4293805",
@@ -81,12 +87,18 @@
           "name": "Mappi32",
           "architecture": "esp32",
           "version": "2.0.0",
-          "category": "Mappi32 ESP32 Core 1.1.7",
+          "category": "Mappi32 ESP32 Core 2.1.7",
+
+          "help": {
+            "online": "https://kmtech.id"
+          },
+        
+          "deprecated": false,
 
           "url": "https://github.com/KMTECH-id/Mappi32/releases/download/v2.1.7/esp32-v2.1.7.zip",
           "archiveFileName": "esp32-v2.1.7.zip",
           "checksum": "SHA-256:7d1dff2cac96631a13f82bed0b83fc7608506b2e19376cc5166622d5ef17fdce",
-          "size": "50000000",
+          "size": "255582583",
 
           "boards": [
             {
@@ -123,7 +135,7 @@
 
           "systems": [
             {
-              "host": "i686-mingw32",
+              "host": "x86_64-mingw32",
               "url": "https://dl.espressif.com/dl/esptool-2.6.1-windows.zip",
               "archiveFileName": "esptool-2.6.1-windows.zip",
               "checksum": "SHA-256:84cf0b369a7707fe566434faba148852fc464992111d5baa95b658b374802f96",
@@ -138,7 +150,7 @@
 
           "systems": [
             {
-              "host": "i686-mingw32",
+              "host": "x86_64-mingw32",
               "url": "https://github.com/igrr/mkspiffs/releases/download/0.2.3/mkspiffs-0.2.3-arduino-esp32-win32.zip",
               "archiveFileName": "mkspiffs-0.2.3-arduino-esp32-win32.zip",
               "checksum": "SHA-256:b647f2c2efe6949819c85ea9404271b55c7c9c25bcb98d3b98a1d0ba771adf56",
@@ -153,7 +165,7 @@
 
           "systems": [
             {
-              "host": "i686-mingw32",
+              "host": "x86_64-mingw32",
               "url": "https://dl.espressif.com/dl/xtensa-esp32-elf-win32-1.22.0-80-g6c4433a-5.2.0.zip",
               "archiveFileName": "xtensa-esp32-elf-win32-1.22.0-80-g6c4433a-5.2.0.zip",
               "checksum": "SHA-256:f217fccbeaaa8c92db239036e0d6202458de4488b954a3a38f35ac2ec48058a4",
@@ -168,7 +180,7 @@
 
           "systems": [
             {
-              "host": "i686-mingw32",
+              "host": "x86_64-mingw32",
               "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-2021r2-patch5/xtensa-esp32-elf-gcc8_4_0-esp-2021r2-patch5-win64.zip",
               "archiveFileName": "xtensa-esp32-elf-gcc8_4_0-esp-2021r2-patch5-win64.zip",
               "checksum": "SHA-256:a328b3c55631846241bbe7999a309b20b797c8dc50b6e8dccf463e66a2da5fb4",
