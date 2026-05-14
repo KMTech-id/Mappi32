@@ -25,7 +25,7 @@
 
           "boards": [
             {
-              "name": "Mappi32 Legacy"
+              "name": "Mappi32"
             }
           ],
 
@@ -61,7 +61,7 @@
 
           "boards": [
             {
-              "name": "Mappi32 Modern LoRa"
+              "name": "Mappi32"
             }
           ],
 
@@ -142,7 +142,7 @@
               "host": "i686-mingw32",
               "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-2021r2-patch5/xtensa-esp32-elf-gcc8_4_0-esp-2021r2-patch5-win32.zip",
               "archiveFileName": "xtensa-esp32-elf-gcc8_4_0-win32.zip",
-              "checksum": "SHA-256:8f7a46e6b71f867ae6b4c4ea811a5caeb016982459ad923df17f2938044064ec",
+              "checksum": "SHA-256:9851c2cfa355e1fad8abfb643a1c945d27385b1851f3ae468915ea78fcbec94",
               "size": "150000000"
             }
           ]
