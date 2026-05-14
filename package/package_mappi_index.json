@@ -37,7 +37,7 @@
           "Classic toolchain support",
           "Stable support for older Mappi32 boards"
         ]
-      }
+      },
       
       "platforms": [
 
